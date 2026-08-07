@@ -26,7 +26,7 @@ class QdrantDB:
             )
             print("Collection created")
 
-    def deg_collection_info(self):
+    def get_collection_info(self):
         info = self.client.get_collection(collection_name=self.collection_name)
 
         return {
