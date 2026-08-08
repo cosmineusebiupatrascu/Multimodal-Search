@@ -1,5 +1,6 @@
 from pathlib import Path
 import torch
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data" / "raw_images"
@@ -10,4 +11,9 @@ VECTOR_SIZE = 512
 
 COLLECTION_NAME = "multimodal_catalog"
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+QDRANT_HOST = os.getenv("QDRANT_HOST", None)
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
+QDRANT_PATH = os.getenv("QDRANT_PATH", "qdrant_db")
+
+# DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cpu"

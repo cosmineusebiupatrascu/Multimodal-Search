@@ -6,9 +6,10 @@ from src import config
 
 
 class QdrantDB:
-    def __init__(self, collection_name: str = config.COLLECTION_NAME, path: str = config.QDRANT_DB_DIR):
+    def __init__(self, collection_name: str = config.COLLECTION_NAME):
         self.collection_name = collection_name
-        self.client = QdrantClient(path=path)
+
+        self.client = QdrantClient(host=config.QDRANT_HOST, port=config.QDRANT_PORT)
 
         self._ensure_collection_exists()
 
@@ -31,7 +32,7 @@ class QdrantDB:
 
         return {
             "status": info.status,
-            "vectors_count": info.vectors_count,
+            "vectors_count": info.indexed_vectors_count,
             "points_count": info.points_count,
             "segments_count": info.segments_count
         }
