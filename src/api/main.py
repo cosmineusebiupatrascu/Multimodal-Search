@@ -1,6 +1,10 @@
 import io
+import shutil
+import uuid
+from pathlib import Path
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 
 from src.search import SearchEngine
@@ -34,6 +38,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+IMAGE_DIR = Path("data/raw_images")
+IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+app.mount("/static", StaticFiles(directory=str(IMAGE_DIR)), name="static")
+
 
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["Health"])
 def health_check():
@@ -51,7 +60,7 @@ def get_stats():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/search/text", tags=["Search"])
+@app.post("/search/text", tags=["Search"])  # TODO: response json is only uuid
 def search_by_text(
         query: str = Form(...),
         limit: int = Form(5)
@@ -81,5 +90,37 @@ async def search_by_image(
         raise HTTPException(status_code=500, detail=f"Image processing failed: {e}")
 
 
+@app.post("/ingest/image")
+async def ingest_image(file: UploadFile = File(...)):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Invalid format. Only images accepted.")
+
+    file_path = IMAGE_DIR / file.filename
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    image_url = f"/static/{file.filename}"
+
+    try:
+        image = Image.open(file_path).convert("RGB")
+        vector = search_engine.encoder.encode_image(image)
+
+        payload = {
+            "image_url": image_url,
+            "filename": file.filename
+        }
+
+        point_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, file.filename))
+        database.upsert_vector(point_id=point_id, vector=vector, payload=payload)
+
+        return {
+            "status": "success",
+            "image_url": image_url
+        }
+    except Exception as e:
+        if file_path.exists():
+            file_path.unlink()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
