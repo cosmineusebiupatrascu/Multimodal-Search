@@ -89,7 +89,7 @@ def test_delete_points_success(MockQdrantDB):
     mock_db_instance.delete_points.return_value = None
 
     with TestClient(app) as client:
-        payload = {"point_ids": ["uuid-1", "uuid-2"]}
+        payload = ["uuid-1", "uuid-2"]
         response = client.post("/delete/points", json=payload)
 
         assert response.status_code == 200
@@ -103,12 +103,12 @@ def test_delete_points_success(MockQdrantDB):
 
 def test_delete_points_validation_empty():
     with TestClient(app) as client:
-        response = client.post("/delete/points", json={"point_ids": []})
+        response = client.post("/delete/points", json=[])
         assert response.status_code == 400
         assert response.json()["detail"] == "IDs list cannot be empty"
 
 
 def test_delete_points_validation_invalid_type():
     with TestClient(app) as client:
-        response = client.post("/delete/points", json={"point_ids": "not_a_list"})
+        response = client.post("/delete/points", json="not_a_list")
         assert response.status_code == 422
