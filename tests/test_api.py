@@ -4,6 +4,8 @@ from unittest.mock import patch, ANY
 from fastapi.testclient import TestClient
 from PIL import Image
 
+patch("qdrant_client.QdrantClient").start()
+
 from src.api.main import app
 
 
