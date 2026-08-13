@@ -99,8 +99,8 @@ class QdrantDB:
         for i in results:
             formatted_results.append({
                 "id": i.id,
-                "score": i.id,
-                "payload": i.id
+                "score": i.score,
+                "payload": i.payload
             })
 
         return formatted_results

@@ -10,7 +10,7 @@ VECTOR_SIZE = 512
 
 COLLECTION_NAME = "multimodal_catalog"
 
-QDRANT_HOST = os.getenv("QDRANT_HOST", None)
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
 QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
 QDRANT_PATH = os.getenv("QDRANT_PATH", "qdrant_db")
 

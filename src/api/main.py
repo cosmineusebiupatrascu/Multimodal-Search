@@ -2,7 +2,7 @@ import io
 import shutil
 import uuid
 from pathlib import Path
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, status
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
@@ -122,5 +122,22 @@ async def ingest_image(file: UploadFile = File(...)):
         if file_path.exists():
             file_path.unlink()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/delete/points", tags=["Management"])
+def delete_points(payload: list[str] = Body(...)):
+    if not payload:
+        raise HTTPException(status_code=400, detail="IDs list cannot be empty")
+
+    try:
+        database.delete_points(point_ids=payload)
+        return {
+            "status": "success",
+            "deleted_count": len(payload)
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete points: {str(e)}")
+
 
 
