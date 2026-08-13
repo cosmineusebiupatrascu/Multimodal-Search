@@ -90,7 +90,7 @@ async def search_by_image(
         raise HTTPException(status_code=500, detail=f"Image processing failed: {e}")
 
 
-@app.post("/ingest/image")
+@app.post("/ingest/image", tags=["Search"])
 async def ingest_image(file: UploadFile = File(...)):
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Invalid format. Only images accepted.")

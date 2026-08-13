@@ -5,6 +5,8 @@ from fastapi.testclient import TestClient
 from PIL import Image
 
 patch("qdrant_client.QdrantClient").start()
+patch("onnxruntime.InferenceSession").start()
+patch("transformers.CLIPProcessor.from_pretrained").start()
 
 from src.api.main import app
 
