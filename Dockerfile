@@ -16,6 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src
 COPY data/ ./data
+COPY clip_onnx/ ./clip_onnx
 
 EXPOSE 8000
 

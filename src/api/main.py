@@ -60,7 +60,7 @@ def get_stats():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/search/text", tags=["Search"])  # TODO: response json is only uuid
+@app.post("/search/text", tags=["Search"])
 def search_by_text(
         query: str = Form(...),
         limit: int = Form(5)
@@ -90,7 +90,7 @@ async def search_by_image(
         raise HTTPException(status_code=500, detail=f"Image processing failed: {e}")
 
 
-@app.post("/ingest/image", tags=["Search"])
+@app.post("/ingest/image", tags=["Insert"])
 async def ingest_image(file: UploadFile = File(...)):
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Invalid format. Only images accepted.")

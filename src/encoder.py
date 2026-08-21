@@ -5,7 +5,7 @@ from PIL import Image
 
 class CLIPEncoder:
     def __init__(self, model_path="clip_onnx"):
-        self.processor = CLIPProcessor.from_pretrained(model_path)
+        self.processor = CLIPProcessor.from_pretrained(f"./{model_path}", local_files_only=True)
 
         self.text_session = ort.InferenceSession(f"{model_path}/text_model.onnx")
         self.vision_session = ort.InferenceSession(f"{model_path}/vision_model.onnx")

@@ -25,5 +25,17 @@ services:
       - qdrant
     restart: always
 
+  frontend:
+    build: .
+    container_name: multimodal_frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend.py:/app/frontend.py
+    command: [ "streamlit", "run", "frontend.py", "--server.port=8501", "--server.address=0.0.0.0" ]
+    depends_on:
+      - api
+    restart: always
+
 volumes:
   qdrant_storage:
