@@ -21,6 +21,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./src:/app/src
+      - ./bulk_ingest.py:/app/bulk_ingest.py
     depends_on:
       - qdrant
     restart: always
